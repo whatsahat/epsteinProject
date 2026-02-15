@@ -2,78 +2,64 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include "arr_proc.h"
+
 
 using namespace std;
 
-/*генерирует массив с заданной длинной
-* имя файла
-* длина
-* опционально: обязательная подпоследовательность для вхожденния
-* опционально: число вхождений конкретной подпоследовательности
+/* Программа для обработки символьной последовательности
+*  Осуществялет поиск вхождений заданной подпоследовательности
+*  в основную последовательность
+*  
+* 
+*  Список кодов ошибок:
+*  -1 - не удалось открыть файл
+*  -2 - файл пуст
+*  -3 - некорректные данные 
 */
-void GenerateFiles() {
-    string filename, pattern;
-    int length, pattern_q;
-    cout << "Enter filename: ";
-    cin >> filename;
-    cout << "\nEnter full array length: ";
-    cin >> length;
-    cout << "\nEnter pattern array ";
-    if(cin.get() != EOF) {
-        
-        cout << "\nEnter quantity pattern: ";
-        cin >> pattern_q;
-        //проверка что количество корректное
+
+
+
+void ProcessArray(string& array, string& pattern, int& count) {
+
+    count = 0;
+
+    for (int i = 0; i <= array.length() - pattern.length(); i++) {
+        bool match = true;
+        for (int j = 0; j < pattern.length(); j++) {
+            if (array[i + j] != pattern[j]) {
+                match = false;
+                break;
+            }
+        }
+        if (match) count++;
     }
-    
-    
 
 }
 
+int array_proc_code(ifstream& input, int& count)
+{
 
-void TestingProgramm() {
 
-    string filename, array;
-    cout << "Enter filename: ";
-    cin >> filename;
-    ifstream input(filename + ".txt");
-    cout << "Enter your array: ";
-    cin >> array;
-    ProcessArray(input, array);
-}
-
-int ProcessArray(ifstream& input, string& array) {
 
     if (!input.is_open()) return -1;
 
-    char symbol;
-    int count = 0;
-    while (input.get(symbol)) {
 
+    if (input.eof()) {
+        return -2;
     }
 
-    return 0;
-}
+    string pattern, array;
 
-int main()
-{
-    int code;
-    int choise;
-    cout << "Programm for generatig and processing array\n"
-        << "Choose action: \n 1. Generate text files with array \n2. Process array \nYour choice: ";
-    while (cin >> choise) {
-        if (choise == 1) {
-            GenerateFiles();
-            break;
-        }
-        else if (choise == 2) {
-            TestingProgramm();
-            break;
-        }
-        else cout << "Wrong number. Try again.\n";
+    getline(input, pattern);
+    getline(input, array);
+
+
+    if (array == "" || pattern == "" || array.length() < pattern.length()) {
+        return -3;
     }
-    
 
+    ProcessArray(array, pattern, count);
 
     return 0;
 }
