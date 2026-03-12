@@ -22,10 +22,18 @@ int main() {
         
     
     ifstream input(infilename);
+    if (input.is_open()) {
+        getline(input, pattern);
+        getline(input, array);
+        input.close();
+    }
+    else {
+        pattern = "";
+        array = "";
+    }
+
     code = array_proc_code(infilename.c_str(), count);
     
-    getline(input, pattern);
-    getline(input, array);
 
     if (pattern.length() > 10) {
         pattern.resize(10);
@@ -81,4 +89,6 @@ int main() {
         break;
     };
 
+    output.close();
+    return 0;
 }

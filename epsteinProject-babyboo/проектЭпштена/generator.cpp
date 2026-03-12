@@ -22,16 +22,38 @@ char randASCII() {
 }
 
 int Generate_Arrays(string& array, string& pattern, int length, int pattern_l, int pattern_q) {
-    for (int i = 0; i < pattern_l; i++) {
-        pattern += randASCII();
+    if (pattern.empty()) {
+        while (pattern.size() < pattern_l) {
+            char c = randASCII();
+            bool isUsed = false;
+            for (char ex : pattern) {
+                if (ex == c) {
+                    isUsed = true;
+                    break;
+                }
+            }
+            if (!isUsed) {
+                pattern += c;
+            }
+        }
     }
-    for (int i = 0; i < length - pattern_l*pattern_q; i++) {
+
+    for (int i = 0; i < length; i++) {
         array += randASCII();
     }
-    int step = length / pattern_q;
-    for (int i; i < pattern_q; i++) {
-        array.insert(i * pattern_q, pattern);
+
+    if (pattern_q > 0) {
+        int step = length / pattern_q;
+        if (step < pattern_l) step = pattern_l;
+        for (int i = 0; i < pattern_q; i++) {
+            int pos = i * step;
+            if (pos + pattern_l > length) pos = length - pattern_l;
+            for (int j = 0; j < pattern_l; j++) {
+                array[pos + j] = pattern[j];
+            }
+        }
     }
+    
 }
 
 void  AutoGen(int& length, int& pattern_l, int& pattern_q){
@@ -40,28 +62,42 @@ void  AutoGen(int& length, int& pattern_l, int& pattern_q){
     pattern_q = rand() % (length / pattern_l + 1);
 }
 
+int safeInput() {
+    int value;
+    while (true) {
+        cin >> value;
+        if (value >= 1 && value <= 1000) {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return value;
+        }
+        else {
+            cout << "Error. The number must be between 1 and 1000.";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
+}
+
 void ManualInput(string& pattern, int& length, int& pattern_l, int& pattern_q) {
     
     cout << "\nEnter main array length: ";
-    cin >> length; //min 1
+    length = safeInput();
     cout << "\nEnter custom pattern (empty for auto): ";
-    cin >> pattern;
-    if (pattern == "") {
-        while (true) {
-            cout << "\nEnter pattern array length: ";
-            cin >> pattern_l;
-            cout << "\nEnter the number of pattern repetitions: ";
-            cin >> pattern_q;
-            if (length >= pattern_l * pattern_q) {
-                break;
-            }
-            cout << "\nInvalid value. length of subsequence cannot be gretaer that main sequence"
+    getline(cin, pattern);
+    if (pattern.empty()) {
+        cout << "\nEnter pattern array length: ";
+        pattern_l = safeInput();
+        cout << "\nEnter the number of pattern repetitions (from 0 to " << length / pattern_l << "): ";
+        pattern_q = safeInput();
+    }
+    else {
+    }
+            cout << "\nInvalid value. length of subsequence cannot be greater that main sequence"
                 << "\nMain sequence length: " << length
                 << "\nSubsequence length: " << pattern_l
                 << "\nNumber of occurences: " << pattern_q
                 << "\nSubceq * occur: " << pattern_l * pattern_q;
-        }        
-    } //добавить проверки
+            //добавить проверки
 }
 
 void GenerateFiles() {
@@ -85,7 +121,12 @@ void GenerateFiles() {
         cout << "Wrong choice. Try again";
     }    
     Generate_Arrays(array, pattern, length, pattern_l, pattern_q);
+    if (!output) {
+        cout << "Error. Cannot create file " << filename << endl; return;
+    }
     output << pattern << endl << array;
+    output.close();
+    cout << "File " << " created successfuly.";
 }
 
 
