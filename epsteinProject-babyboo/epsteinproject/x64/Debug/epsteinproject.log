@@ -1,0 +1,6 @@
+﻿  pch.cpp
+  epsteinproject.cpp
+F:\проекты вс\epsteinProject-babyboo\epsteinProject-babyboo\epsteinproject\epsteinproject.cpp(51,11): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+  (компиляция исходного файла "/epsteinproject.cpp")
+  
+  epsteinproject.vcxproj -> F:\проекты вс\epsteinProject-babyboo\epsteinProject-babyboo\проектЭпштена\x64\Debug\epsteinproject.lib
